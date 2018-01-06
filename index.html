@@ -63,7 +63,7 @@
       function AddToDos(value) {
         $.showIndicator();
         var arr;
-        if (localStorage.getItem("ToDolocalStorage") == null) {
+        if (localStorage.getItem("ToDolocalStorage") == null || localStorage.getItem("ToDolocalStorage") == "[]") {
           arr = [];
           arr.push(value);
           localStorage.ToDolocalStorage = JSON.stringify(arr);
@@ -131,7 +131,6 @@
           return (color += '0123456789abcdef' [Math.floor(Math.random() * 16)]) && (color.length == 6) ? color: arguments.callee(color);
         })('');
       }
-      //js生成guid
       
     </script>
   </body>
