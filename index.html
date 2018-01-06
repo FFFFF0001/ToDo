@@ -12,13 +12,98 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <style type="text/css">
+      .bar .button-link { padding: 0px 8px !important; } .ToDo { font-family:
+      "微软雅黑"; letter-spacing: -1px; font-weight: 300; font-size: 36px; margin:
+      10px; position: relative; } svg{ color: white; } #DateTime{ text-transform:
+      none; text-align: center; margin: 8px 10px; font-size: 13px; color: #9c9999;
+      }
+    </style>
   </head>
   
   <body>
+    <div class="page">
+      <header class="bar bar-nav">
+        <h1 class='title'>
+          侧栏
+        </h1>
+      </header>
+    </div>
+    <div class="panel-overlay">
+    </div>
+    <!-- Left Panel with Reveal effect -->
+    <div class="panel panel-left panel-reveal theme-dark" id='panel-left-demo'>
+      <div class="content-block">
+        <p style="text-align: right;">
+          <a href="#" class="close-panel">
+            关闭
+          </a>
+        </p>
+        <p class="ToDo">
+          ToDo
+          <span style="position:absolute; top:1px; font-size: 17px;">
+            &copy;
+            <span>
+        </p>
+        <p style="text-align: right; font-size: 11px; margin: 0">
+          ZhangCheng
+        </p>
+        <p style="text-align: right; font-size: 11px; margin: 0 0 35px 0">
+          <svg aria-hidden="true" class="octicon octicon-location" height="16" version="1.1"
+          viewBox="0 0 12 16" width="12">
+            <path fill-rule="evenodd" d="M6 0C2.69 0 0 2.5 0 5.5 0 10.02 6 16 6 16s6-5.98 6-10.5C12 2.5 9.31 0 6 0zm0 14.55C4.14 12.52 1 8.44 1 5.5 1 3.02 3.25 1 6 1c1.34 0 2.61.48 3.56 1.36.92.86 1.44 1.97 1.44 3.14 0 2.94-3.14 7.02-5 9.05zM8 5.5c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z">
+            </path>
+          </svg>
+          &ensp;&ensp;Suzhou, China
+        </p>
+        <p>
+          <a onclick="Add()" href="#" class="button button-fill">
+            添加一条ToDo
+          </a>
+        </p>
+        <p>
+          <a onclick="ClearAll()" href="#" class="button button-fill button-danger">
+            移除所有的ToDo
+          </a>
+        </p>
+        <p style="margin: 40px 0 0 0">
+          <a href="tencent://message/?uin=571346800&Site=&Menu=yes" class="button button-light">
+            QQ：571346800
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/zc95/ToDo" class="button button-light">
+            github地址
+          </a>
+        </p>
+        <p>
+          <a href="https://zc95.github.io" class="button button-light">
+            我的hexo博客
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="panel panel-right panel-reveal">
+      <div class="content-block">
+        <p>
+          这是一个侧栏
+        </p>
+        <!-- Click on link with "close-panel" class will close panel -->
+        <p>
+          <a href="#" class="close-panel">
+            关闭
+          </a>
+        </p>
+      </div>
+    </div>
     <div class="page-group">
       <div class="page page-current">
         <!-- 你的html代码 -->
         <header class="bar bar-nav">
+          <button class="button button-link button-nav pull-left open-panel">
+            <span class="icon icon-settings">
+            </span>
+          </button>
           <button onclick="Add()" class="button button-link button-nav pull-right">
             <span class="icon icon-star">
             </span>
@@ -27,8 +112,9 @@
             ToDo
           </h1>
         </header>
-        <!-- 你的html代码 -->
         <div class="content">
+          <div class="content-block-title" id="DateTime" style="text-transform: none;">
+          </div>
           <div id="titleTip" class="content-block-title" style="text-transform: none; margin: 10px 10px;">
             Are the tasks done today?
           </div>
@@ -37,6 +123,7 @@
             </ul>
           </div>
         </div>
+        <!-- 你的html代码 -->
       </div>
     </div>
     <script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.min.js'
@@ -48,10 +135,29 @@
     <script>
       $(function() {
         getList();
-      })
+        setInterval("fnDate()", 1000);
+      }) function fnDate() {
+        var oDiv = document.getElementById("DateTime");
+        var date = new Date();
+        var year = date.getFullYear(); //当前年份  
+        var month = date.getMonth(); //当前月份  
+        var data = date.getDate(); //天  
+        var hours = date.getHours(); //小时  
+        var minute = date.getMinutes(); //分  
+        var second = date.getSeconds(); //秒  
+        var time = year + "-" + fnW((month + 1)) + "-" + fnW(data) + " " + fnW(hours) + ":" + fnW(minute) + ":" + fnW(second);
+        var a = new Array("日", "一", "二", "三", "四", "五", "六");
+        var week = new Date().getDay();
+        var str = "星期" + a[week];
+        oDiv.innerHTML = time + "　" + str;
+      }
+      //补位 当某个字段不是两位数时补0  
+      function fnW(str) {
+        return str > 9 ? str: "0" + str;
+      }
       //添加按钮的点击操作
       function Add() {
-        $.prompt('Add a ToTo ?', function(value) {
+        $.prompt('Add a ToDo ?', function(value) {
           if (value == "") {
             $.toast("不能为空");
             return false;
@@ -80,18 +186,20 @@
       }
       //加载列表
       function getList() {
+        $("#ListContainer").html("");
         var msg = localStorage.getItem("ToDolocalStorage");
-        if (msg == null||msg == "[]") {
+        if (msg == null || msg == "[]") {
           $("#titleTip").html("<p><a href='#'' class='button button-light' onClick='Add()'>添加第一条ToDo吧</a></p>");
         } else {
           $("#titleTip").html("Are the tasks done today?");
+          var json = eval(msg);
+          var str = "";
+          for (var i = 0; i < json.length; i++) {
+            str += "<li id='ToDoList" + i + "' style='margin-bottom: 5px;'>" + "<label style='border-left: 6px solid " + getRandomColor() + "' class='label-checkbox item-content'>" + "<input type='checkbox' name='my-checkbox'>  " + "<div class='item-media'>" + "<i class='icon icon-form-checkbox'>" + "</i>" + "</div>" + "<div class='item-inner'>" + json[i] + "<span style='position: absolute; right: 5px;' onclick=\"DeleteMe('" + json[i] + "')\" class='icon icon-remove'></span>" + "<div>" + "</label>" + "</li>"
+          }
+          $("#ListContainer").html(str);
         }
-        var json = eval(msg);
-        var str = "";
-        for (var i = 0; i < json.length; i++) {
-          str += "<li id='ToDoList" + i + "' style='margin-bottom: 5px;'>" + "<label style='border-left: 6px solid " + getRandomColor() + "' class='label-checkbox item-content'>" + "<input type='checkbox' name='my-checkbox'>" + "<div class='item-media'>" + "<i class='icon icon-form-checkbox'>" + "</i>" + "</div>" + "<div class='item-inner'>" + json[i] + "<span style='position: absolute; right: 5px;' onclick=\"DeleteMe('" + json[i] + "')\" class='icon icon-remove'></span>" + "<div>" + "</label>" + "</li>"
-        }
-        $("#ListContainer").html(str)
+        $(".close-panel").click();
       }
       //删除
       function DeleteMe(id) {
@@ -123,7 +231,6 @@
         }];
         var groups = [buttons1, buttons2];
         $.actions(groups);
-
       }
       //随机颜色
       var getRandomColor = function() {
@@ -131,7 +238,20 @@
           return (color += '0123456789abcdef' [Math.floor(Math.random() * 16)]) && (color.length == 6) ? color: arguments.callee(color);
         })('');
       }
-      
+      //清除localstorage
+      function ClearAll() {
+        $.confirm('此操作将移除所有的localStorage，不可恢复！', function() {
+          localStorage.removeItem("ToDolocalStorage");
+          $.showIndicator();
+          setTimeout(function() {
+            $.hideIndicator();
+            $(".close-panel").click();
+            getList();
+            $.toast("操作成功");
+          },
+          1000);
+        });
+      }
     </script>
   </body>
 
