@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+      ToDo
+    </title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="img/favicon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+  </head>
+  
+  <body>
+    <div class="page-group">
+      <div class="page page-current">
+        <!-- 你的html代码 -->
+        <header class="bar bar-nav">
+          <button onclick="Add()" class="button button-link button-nav pull-right">
+            <span class="icon icon-star">
+            </span>
+          </button>
+          <h1 class="title">
+            ToDo
+          </h1>
+        </header>
+        <!-- 你的html代码 -->
+        <div class="content">
+          <div id="titleTip" class="content-block-title" style="text-transform: none; margin: 10px 10px;">
+            Are the tasks done today?
+          </div>
+          <div class="list-block">
+            <ul id="ListContainer">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.min.js'
+    charset='utf-8'>
+    </script>
+    <script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js'
+    charset='utf-8'>
+    </script>
+    <script>
+      $(function() {
+        getList();
+      })
+      //添加按钮的点击操作
+      function Add() {
+        $.prompt('Add a ToTo ?', function(value) {
+          if (value == "") {
+            $.toast("不能为空");
+            return false;
+          }
+          AddToDos(value);
+        });
+      }
+      //add todo
+      function AddToDos(value) {
+        $.showIndicator();
+        var arr;
+        if (localStorage.getItem("ToDolocalStorage") == null) {
+          arr = [];
+          arr.push(value);
+          localStorage.ToDolocalStorage = JSON.stringify(arr);
+        } else {
+          var arr = JSON.parse(localStorage.getItem("ToDolocalStorage"));
+          arr.push(value);
+          localStorage.ToDolocalStorage = JSON.stringify(arr);
+        }
+        getList();
+        setTimeout(function() {
+          $.hideIndicator();
+        },
+        400);
+      }
+      //加载列表
+      function getList() {
+        var msg = localStorage.getItem("ToDolocalStorage");
+        if (msg == null) {
+          $("#titleTip").html("<p><a href='#'' class='button button-light' onClick='Add()'>添加第一条ToDo吧</a></p>");
+        } else {
+          $("#titleTip").html("Are the tasks done today?");
+        }
+        var json = eval(msg);
+        var str = "";
+        for (var i = 0; i < json.length; i++) {
+          str += "<li id='ToDoList" + i + "' style='margin-bottom: 5px;'>" + "<label style='border-left: 6px solid " + getRandomColor() + "' class='label-checkbox item-content'>" + "<input type='checkbox' name='my-checkbox'>" + "<div class='item-media'>" + "<i class='icon icon-form-checkbox'>" + "</i>" + "</div>" + "<div class='item-inner'>" + json[i] + "<span style='position: absolute; right: 5px;' onclick=\"DeleteMe('" + json[i] + "')\" class='icon icon-remove'></span>" + "<div>" + "</label>" + "</li>"
+        }
+        $("#ListContainer").html(str)
+      }
+      //删除
+      function DeleteMe(id) {
+        var buttons1 = [{
+          text: '请选择',
+          label: true
+        },
+        {
+          text: '删除',
+          bold: true,
+          color: 'danger',
+          onClick: function() {
+            $.showIndicator();
+            setTimeout(function() {
+              $.hideIndicator();
+              var arr = JSON.parse(localStorage.getItem("ToDolocalStorage"));
+              var json = eval(arr);
+              json.splice(json.indexOf(id), 1);
+              localStorage.ToDolocalStorage = JSON.stringify(json);
+              getList();
+              $.toast("删除成功");
+            },
+            400);
+          }
+        }];
+        var buttons2 = [{
+          text: '取消',
+          bg: 'danger'
+        }];
+        var groups = [buttons1, buttons2];
+        $.actions(groups);
+
+      }
+      //随机颜色
+      var getRandomColor = function() {
+        return '#' + (function(color) {
+          return (color += '0123456789abcdef' [Math.floor(Math.random() * 16)]) && (color.length == 6) ? color: arguments.callee(color);
+        })('');
+      }
+      //js生成guid
+      
+    </script>
+  </body>
+
+</html>
