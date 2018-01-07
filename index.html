@@ -11,6 +11,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <style type="text/css">
+    html {
+      overflow: hidden !important;
+    }
+
     .bar .button-link {
       padding: 0px 8px !important;
     }
@@ -27,19 +31,53 @@
     svg {
       color: white;
     }
+
+    #JsonDiv {
+      max-height: 120px;
+      overflow: scroll;
+      color: #333030;
+      background-color: #f5f4f4;
+      font-size: 8px;
+      border-radius: 2px;
+      padding: 4px;
+      margin: 8px 0px;
+      width: 100%;
+      resize: none;
+      box-shadow: 0px 0px 16px #f7f7f7;
+      border: 1px solid #f7f7f7;
+    }
   </style>
 </head>
 
 <body>
   <div class="page">
+    <!-- 你的html代码 -->
     <header class="bar bar-nav">
-      <h1 class='title'>
-        侧栏
+      <button onclick="getJson()" class="button button-link button-nav pull-left open-panel">
+        <span class="icon icon-settings">
+        </span>
+      </button>
+      <button onclick="Add()" class="button button-link button-nav pull-right">
+        <span class="icon icon-star">
+        </span>
+      </button>
+      <h1 class="title">
+        ToDo
       </h1>
     </header>
+    <div class="content">
+      <div id="titleTip" class="content-block-title" style="text-transform: none; margin: 10px 10px;">
+      </div>
+      <div class="list-block">
+        <ul id="ListContainer">
+        </ul>
+      </div>
+    </div>
+    <!-- 你的html代码 -->
   </div>
-  <div class="panel-overlay">
-  </div>
+
+  <div class="panel-overlay"></div>
+
   <!-- Left Panel with Reveal effect -->
   <div class="panel panel-left panel-reveal theme-dark" id='panel-left-demo'>
     <div class="content-block">
@@ -54,6 +92,7 @@
           &copy;
           <span>
       </p>
+      <textarea readonly="readonly" id="JsonDiv"></textarea>
       <p style="text-align: right; font-size: 11px; margin: 0">
         ZhangCheng
       </p>
@@ -68,6 +107,9 @@
         <a onclick="Add()" href="#" class="button button-fill">
           添加一条ToDo
         </a>
+      </p>
+      <p>
+        <a onclick="resetAll()" href="#" class="button button-fill button-warning">重置所有状态</a>
       </p>
       <p>
         <a onclick="ClearAll()" href="#" class="button button-fill button-danger">
@@ -86,46 +128,6 @@
       </p>
     </div>
   </div>
-  <div class="panel panel-right panel-reveal">
-    <div class="content-block">
-      <p>
-        这是一个侧栏
-      </p>
-      <!-- Click on link with "close-panel" class will close panel -->
-      <p>
-        <a href="#" class="close-panel">
-          关闭
-        </a>
-      </p>
-    </div>
-  </div>
-  <div class="page-group">
-    <div class="page page-current">
-      <!-- 你的html代码 -->
-      <header class="bar bar-nav">
-        <button class="button button-link button-nav pull-left open-panel">
-          <span class="icon icon-settings">
-          </span>
-        </button>
-        <button onclick="Add()" class="button button-link button-nav pull-right">
-          <span class="icon icon-star">
-          </span>
-        </button>
-        <h1 class="title">
-          ToDo
-        </h1>
-      </header>
-      <div class="content">
-        <div id="titleTip" class="content-block-title" style="text-transform: none; margin: 10px 10px;">
-        </div>
-        <div class="list-block">
-          <ul id="ListContainer">
-          </ul>
-        </div>
-      </div>
-      <!-- 你的html代码 -->
-    </div>
-  </div>
   <script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'>
   </script>
   <script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'>
@@ -133,7 +135,6 @@
   <script>
     $(function () {
       $.showIndicator();
-
       setTimeout(function () {
         $.hideIndicator();
         $.toast("Nice to meet you");
@@ -141,6 +142,33 @@
       },
         1000);
     });
+    //去除所有的json数据
+    function getJson() {
+      $("#JsonDiv").val(localStorage.getItem("ToDolocalStorage"));
+    }
+    //重置所有的状态
+    function resetAll() {
+
+
+      $.confirm('此操作会将所有的状态设置为未选中！', function () {
+
+        $.showIndicator();
+        setTimeout(function () {
+          $.hideIndicator();
+          $(".close-panel").click();
+          var msg = localStorage.getItem("ToDolocalStorage");
+          var json = eval(msg);
+          for (var i = 0; i < json.length; i++) {
+            json[i].checked = "0";
+
+          }
+          localStorage.ToDolocalStorage = JSON.stringify(json);
+          getList();
+          $.toast("操作成功");
+        },
+          1000);
+      });
+    }
     //添加按钮的点击操作
     function Add() {
       $.prompt('Add a ToDo ?', function (value) {
