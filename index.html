@@ -194,17 +194,19 @@
       if (msg == null || msg == "[]") {
         $("#titleTip").html("<p><a href='#'' class='button button-light' onClick='Add()'>添加第一条ToDo吧</a></p>");
       } else {
-        $("#titleTip").html("Are the tasks done today?");
+        $("#titleTip").html("今天的任务都完成了吗?");
         var json = eval(msg);
         var str = "";
         var checkboxStr = "";
+        var decorationStr = "style='text-decoration:line-through'";
         for (var i = 0; i < json.length; i++) {
           if (json[i].checked == "1") {
             checkboxStr = "<input onchange=\"checkChange('" + json[i].id + "')\"   type='checkbox' checked='checked' name='my-checkbox'>";
           } else {
+            decorationStr = "style='text-decoration:none'";
             checkboxStr = "<input onchange=\"checkChange('" + json[i].id + "')\"  type='checkbox' name='my-checkbox'>";
           }
-          str += "<li id='" + json[i].id + "' style='margin-bottom: 5px;'>" + "<label style='border-left: 6px solid " + getRandomColor() + "' class='label-checkbox item-content'>" + checkboxStr + "<div class='item-media'>" + "<i class='icon icon-form-checkbox'>" + "</i>" + "</div>" + "<div class='item-inner'>" + json[i].text + "<span style='position: absolute; right: 5px;' onclick=\"DeleteMe('" + json[i].id + "')\" class='icon icon-remove'></span>" + "<div>" + "</label>" + "</li>"
+          str += "<li "+decorationStr+" id='" + json[i].id + "' style='margin-bottom: 5px;'>" + "<label style='border-left: 6px solid " + getRandomColor() + "' class='label-checkbox item-content'>" + checkboxStr + "<div class='item-media'>" + "<i class='icon icon-form-checkbox'>" + "</i>" + "</div>" + "<div class='item-inner'>" + json[i].text + "<span style='position: absolute; right: 5px;' onclick=\"DeleteMe('" + json[i].id + "')\" class='icon icon-remove'></span>" + "<div>" + "</label>" + "</li>"
         }
         $("#ListContainer").html(str);
       }
@@ -218,8 +220,10 @@
         if (json[i].id == id) {
           if (json[i].checked == "0") {
             json[i].checked = "1"
+            $("#"+id).css("text-decoration","line-through");
           } else {
             json[i].checked = "0"
+            $("#"+id).css("text-decoration","none");
           }
           localStorage.ToDolocalStorage = JSON.stringify(json); //保存到localStorage
           //getList(); 可刷新也可不刷新
